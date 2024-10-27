@@ -5,14 +5,14 @@ export const generateFakeItems = (count: number): Item[] => {
   return Array.from({ length: count }, () => randItem());
 };
 
-function randItem() {
+export function randItem() {
   const genre = randGenre();
   const instrument = randInstrument(genre);
 
   return {
     id: faker.commerce.isbn(),
     title: faker.music.songName().substring(0, 35),
-    url: Math.floor(Math.random() * 10) + ".mp3",  
+    url: Math.floor(Math.random() * 10) + ".mp3",
     artist: faker.music.artist(),
     genre,
     instrument,
@@ -22,20 +22,19 @@ function randItem() {
   };
 }
 
-function rand(arr: string[]) {
+export function rand(arr: string[]) {
   const randomIndex = Math.floor(Math.random() * arr.length);
   return arr[randomIndex];
 }
 
-function randGenre() {
+export function randGenre() {
   const genre = genres[Math.floor(Math.random() * genres.length)];
   return genre.name;
 }
 
-function randInstrument(genreName: string) {
+export function randInstrument(genreName: string) {
   const genre = genres.find((g) => g.name === genreName);
   if (!genre) throw new Error("Genre not found:" + genreName);
   const randomIndex = Math.floor(Math.random() * genre.instruments.length);
   return genre.instruments[randomIndex];
 }
-

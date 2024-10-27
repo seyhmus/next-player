@@ -77,7 +77,6 @@ export default function Player({ songList }: { songList: Item[] }) {
     setFilteredItems(filteredItems2);
   }, [items, selectedInstruments, selectedGenres]);
 
-  useEffect;
   items.filter((item) =>
     selectedInstruments.length === 0
       ? true
@@ -122,24 +121,15 @@ export default function Player({ songList }: { songList: Item[] }) {
   };
 
   const handleBackClick = () => {
-    var currentIndex = selectedItem ? items.indexOf(selectedItem) : 0;
+    let currentIndex = selectedItem ? items.indexOf(selectedItem) : 0;
     currentIndex = (currentIndex - 1 + items.length) % items.length;
     setSelectedItem(items[currentIndex]);
   };
 
   const handleForwardClick = () => {
-    var currentIndex = selectedItem ? items.indexOf(selectedItem) : -1;
+    let currentIndex = selectedItem ? items.indexOf(selectedItem) : -1;
     currentIndex = (currentIndex + 1) % items.length;
     setSelectedItem(items[currentIndex]);
-  };
-
-  const getDuration = async (item: Item) => {
-    if (!item.url) return 0;
-
-    const response = await fetch(item.url);
-    const audio = new Audio(response.url);
-    await audio.load();
-    return audio.duration;
   };
 
   useEffect(() => {
@@ -150,11 +140,6 @@ export default function Player({ songList }: { songList: Item[] }) {
 
       audioRef.current.addEventListener("ended", handleEnded);
       audioRef.current.addEventListener("error", handleError);
-
-      return () => {
-        audioRef.current?.removeEventListener("ended", handleEnded);
-        audioRef.current?.removeEventListener("error", handleError);
-      };
     }
   }, [audioRef]);
 

@@ -1,10 +1,10 @@
-interface Instrument {
+export interface Instrument {
   name: string;
   description: string;
   image: string;
 }
 
-interface Genre {
+export interface Genre {
   name: string;
   description: string;
   tempo: string;

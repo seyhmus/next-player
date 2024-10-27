@@ -18,3 +18,9 @@ export function shuffleArray(array: Array<Item>) {
 
   return shuffledArray;
 }
+
+export function getDuration(url: string) {
+  const audio = new Audio(url);
+  audio.load();
+  return audio.duration;
+}
