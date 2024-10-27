@@ -1,4 +1,17 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app). It defines a React component named Player that serves as an audio player with functionalities such as shuffling songs, filtering by genre and instrument, and controlling playback (play, pause, mute, skip). It uses React hooks for state management and side effects, and leverages environment variables for configuration.
+
+## Key Features
+- Audio Playback: Plays and pauses audio tracks, with controls for skipping forward and backward.
+- Filtering: Allows filtering of songs by genre and instrument.
+- Shuffling: Shuffles the list of songs.
+- Mute Control: Toggles the mute state of the audio.
+
+## Customization
+- Modify the songList Prop: Pass a different list of songs to the Player component to change the available tracks.
+- Update the UI: Customize the imported UI components and icons to fit your design needs.
+- Environment variables: Add NEXT_PUBLIC_BASE_URL to .env file in root directory
+
+Preview at [Vercel](https://next-player-60r6c3khd-seyhmus1s-projects.vercel.app/) 
 
 ## Getting Started
 
