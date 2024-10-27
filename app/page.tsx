@@ -1,13 +1,9 @@
 import Player from "@/components/Player";
-import {items} from "@/lib/data";
+import { items } from "@/lib/data";
 
-export default function Home({songList}: {songList: Item[]}) {
-
+export default function Home() {
   return (
-    <div
-      id="wrapper"
-      className="flex flex-col justify-items-center items-center min-h-screen font-[family-name:var(--font-geist-sans)] bg-black"
-    >
+    <div className="flex flex-col justify-items-center items-center min-h-screen font-[family-name:var(--font-geist-sans)] bg-black">
       <header className="row-start-1" />
       <main className="row-start-2">
         <Player songList={items} />
