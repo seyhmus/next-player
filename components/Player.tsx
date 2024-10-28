@@ -49,7 +49,7 @@ export default function Player({ songList }: { songList: Item[] }) {
       );
     }
     return songList;
-  }, [artist]);
+  }, [artist, songList]);
 
   const uniqueGenres = new Set(items.map((item) => item.genre));
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
@@ -168,7 +168,7 @@ export default function Player({ songList }: { songList: Item[] }) {
     } catch (error) {
       console.error("Error playing audio:", error);
     }
-  }, [selectedItem]);
+  }, [selectedItem, isPlaying]);
 
   const filteredItemsMemo = useMemo(() => filteredItems, [filteredItems]);
 

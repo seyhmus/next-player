@@ -1,6 +1,5 @@
 import Player from "@/components/Player";
 import { items } from "@/lib/data";
-import { useParams } from "next/navigation";
 
 export default function Home() {
 
