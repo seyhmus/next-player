@@ -11,20 +11,27 @@ import {
 } from "@/components/ui/table";
 import {
   Disc3,
+  MoveLeft,
+  MoveRight,
   Music,
   PlayCircle,
   Shuffle,
   SkipBack,
   SkipForward,
+  SquareChevronDown,
+  SquareChevronUp,
   StopCircle,
   Volume2,
   VolumeOff,
 } from "lucide-react";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { Item } from "@/lib/data";
 import { cn, shuffleArray } from "@/lib/utils";
+
+import { useParams } from "next/navigation";
+import Link from "next/link";
 
 function getUrl(url: string): string {
   return process.env.NEXT_PUBLIC_BASE_URL + url;
@@ -33,10 +40,18 @@ function getUrl(url: string): string {
 export default function Player({ songList }: { songList: Item[] }) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  const [items, setItems] = useState(songList.slice(0, 1000));
-  const handleShuffleClick = () => {
-    setItems(shuffleArray(items));
-  };
+  const params = useParams();
+  const artist = params.artist
+    ? decodeURIComponent(params.artist.toString())
+    : undefined;
+  const items: Item[] = useMemo(() => {
+    if (artist) {
+      return songList.filter(
+        (item) => item.artist.toLowerCase() === artist.toLowerCase()
+      );
+    }
+    return songList;
+  }, [artist]);
 
   const uniqueGenres = new Set(items.map((item) => item.genre));
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
@@ -74,14 +89,13 @@ export default function Player({ songList }: { songList: Item[] }) {
         : selectedInstruments.includes(item.instrument) &&
           selectedGenres.includes(item.genre)
     );
+
     setFilteredItems(filteredItems2);
   }, [items, selectedInstruments, selectedGenres]);
 
-  items.filter((item) =>
-    selectedInstruments.length === 0
-      ? true
-      : selectedInstruments.includes(item.instrument)
-  );
+  const handleShuffleClick = () => {
+    setFilteredItems(shuffleArray(filteredItems));
+  };
 
   const [selectedItem, setSelectedItem] = useState<Item>(items[0]);
   const handleRowClick = (item: Item) => {
@@ -158,6 +172,30 @@ export default function Player({ songList }: { songList: Item[] }) {
     }
   }, [selectedItem]);
 
+  const filteredItemsMemo = useMemo(() => filteredItems, [filteredItems]);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(100);
+  const totalPages = Math.ceil(filteredItemsMemo.length / rowsPerPage);
+  const handlePreviousPageClick = () => {
+    setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
+  };
+  const handleNextPageClick = () => {
+    setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages));
+  };
+
+  const startIndex = (currentPage - 1) * rowsPerPage;
+  const endIndex = startIndex + rowsPerPage;
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const [isLoaded, setIsLoaded] = useState(false);
+  useEffect(() => {
+    setCurrentPage(1);
+    setIsLoaded(true);
+  }, [filteredItemsMemo]);
+
   return (
     <div className="flex flex-col gap-4 items-center">
       <fieldset className="text-center border rounded-3xl p-1">
@@ -177,7 +215,6 @@ export default function Player({ songList }: { songList: Item[] }) {
           ))}
         </div>
       </fieldset>
-
       <fieldset className="text-center border rounded-3xl p-1">
         <legend className="text-gray-300">Instruments</legend>
         <div className="flex flex-wrap gap-2 m-2 justify-center align-middle text-center">
@@ -195,9 +232,8 @@ export default function Player({ songList }: { songList: Item[] }) {
           ))}
         </div>
       </fieldset>
-
       {/* Player */}
-      <div className="container flex flex-col sm:flex-row m-auto aspect-square sm:aspect-video rounded-3xl bg-orange-600">
+      <div className="container flex flex-col sm:flex-row m-auto sm:aspect-video rounded-3xl bg-orange-600">
         {/* Sidebar */}
         <div className="w-full sm:w-12 flex flex-row sm:flex-col items-center justify-evenly my-2">
           <Shuffle onClick={handleShuffleClick} className="cursor-pointer" />
@@ -213,7 +249,6 @@ export default function Player({ songList }: { songList: Item[] }) {
             {isMuted ? <VolumeOff /> : <Volume2 />}
           </button>
         </div>
-
         {/* PlayList */}
         <div className="w-full rounded-3xl text-slate-300 bg-slate-900 overflow-y-auto p-1">
           <Table>
@@ -228,7 +263,7 @@ export default function Player({ songList }: { songList: Item[] }) {
             </TableHeader>
 
             <TableBody>
-              {filteredItems.map((item, index) => (
+              {filteredItems.slice(startIndex, endIndex).map((item, index) => (
                 <TableRow
                   key={index}
                   onClick={() => {
@@ -244,7 +279,11 @@ export default function Player({ songList }: { songList: Item[] }) {
                     )}
                     {item.title}
                   </TableCell>
-                  <TableCell>{item.artist}</TableCell>
+                  <TableCell>
+                    <Link href={item.artist} shallow>
+                      {item.artist}
+                    </Link>
+                  </TableCell>
                   <TableCell>{item.genre}</TableCell>
                   <TableCell>{item.instrument}</TableCell>
                   <TableCell className="text-right">{item.price}</TableCell>
@@ -253,7 +292,6 @@ export default function Player({ songList }: { songList: Item[] }) {
             </TableBody>
 
             <TableCaption className="text-orange-600">
-              Found: {filteredItems.length}
               {isPlaying && (
                 <div>
                   {selectedItem.title}
@@ -263,6 +301,43 @@ export default function Player({ songList }: { songList: Item[] }) {
             </TableCaption>
           </Table>
         </div>
+      </div>
+
+      <div className="flex gap-2 items-center text-md text-slate-300">
+        {isLoaded ? (
+          <>
+            Found: {filteredItems.length}. Displaying
+            <select
+              className="bg-slate-600 text-sm text-right border rounded-sm border-slate-300"
+              value={rowsPerPage}
+              onChange={(e) => {
+                const newRowsPerPage = parseInt(e.target.value, 10);
+                setRowsPerPage(newRowsPerPage);
+                setCurrentPage(1);
+              }}
+            >
+              <option value="10">10</option>
+              <option value="20">20</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+              <option value="1000">1000</option>
+            </select>
+            songs per page.
+          </>
+        ) : (
+          "Loading..."
+        )}
+      </div>
+      <div className="flex gap-2 items-center text-md text-slate-300">
+        <button onClick={handlePreviousPageClick}>
+          <SquareChevronDown />
+        </button>
+        <span>
+          Page {currentPage} of {totalPages}
+        </span>
+        <button onClick={handleNextPageClick}>
+          <SquareChevronUp />
+        </button>
       </div>
 
       <audio ref={audioRef} hidden>
