@@ -11,8 +11,6 @@ import {
 } from "@/components/ui/table";
 import {
   Disc3,
-  MoveLeft,
-  MoveRight,
   Music,
   PlayCircle,
   Shuffle,
@@ -186,9 +184,6 @@ export default function Player({ songList }: { songList: Item[] }) {
 
   const startIndex = (currentPage - 1) * rowsPerPage;
   const endIndex = startIndex + rowsPerPage;
-  const handlePageChange = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
-  };
 
   const [isLoaded, setIsLoaded] = useState(false);
   useEffect(() => {
