@@ -243,7 +243,9 @@ export default function Player({ songList }: { songList: Item[] }) {
         </div>
       </fieldset>
 
-      <fieldset className={cn("flex gap-2", artist && "hidden")}>
+      <fieldset
+        className={cn("flex flex-col sm:flex-row gap-2", artist && "hidden")}
+      >
         <input
           className="bg-slate-600 text-slate-300 rounded-lg px-1 h-8 border"
           type="input"
@@ -301,7 +303,6 @@ export default function Player({ songList }: { songList: Item[] }) {
                 <TableHead>Genre</TableHead>
                 <TableHead>Instrument</TableHead>
                 <TableHead className="text-right">Price</TableHead>
-                <div className="TableHead"></div>
               </TableRow>
             </TableHeader>
 
@@ -329,8 +330,10 @@ export default function Player({ songList }: { songList: Item[] }) {
                   </TableCell>
                   <TableCell>{item.genre}</TableCell>
                   <TableCell>{item.instrument}</TableCell>
-                  <TableCell className="text-right">{item.price}</TableCell>
-                  <TableCell className="text-center">
+                  <TableCell className="text-right">
+                    {item.price}
+                    <div className="block sm:hidden" />
+
                     <a
                       href="#"
                       className="z-10 ml-2 rounded-sm bg-slate-500 px-1 text-slate-300"
