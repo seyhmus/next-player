@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/table";
 import {
   Disc3,
+  FolderUpIcon,
   Music,
   PlayCircle,
   Shuffle,
@@ -227,6 +228,17 @@ export default function Player({ songList }: { songList: Item[] }) {
           ))}
         </div>
       </fieldset>
+      <div
+        className={cn(
+          "flex flex-wrap gap-2 m-2 justify-center align-middle text-center text-lg text-slate-300",
+          artist ? "" : "hidden"
+        )}
+      >
+        {artist}
+        <Link href="/">
+          <FolderUpIcon />
+        </Link>
+      </div>
       {/* Player */}
       <div className="container flex flex-col sm:flex-row m-auto sm:aspect-video rounded-3xl bg-orange-600">
         {/* Sidebar */}
@@ -250,10 +262,11 @@ export default function Player({ songList }: { songList: Item[] }) {
             <TableHeader>
               <TableRow>
                 <TableHead>Title</TableHead>
-                <TableHead>Artist</TableHead>
+                <TableHead className={artist && "hidden"}>Artist</TableHead>
                 <TableHead>Genre</TableHead>
                 <TableHead>Instrument</TableHead>
                 <TableHead className="text-right">Price</TableHead>
+                <div className="TableHead"></div>
               </TableRow>
             </TableHeader>
 
@@ -274,7 +287,7 @@ export default function Player({ songList }: { songList: Item[] }) {
                     )}
                     {item.title}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className={artist && "hidden"}>
                     <Link href={item.artist} shallow>
                       {item.artist}
                     </Link>
@@ -282,6 +295,17 @@ export default function Player({ songList }: { songList: Item[] }) {
                   <TableCell>{item.genre}</TableCell>
                   <TableCell>{item.instrument}</TableCell>
                   <TableCell className="text-right">{item.price}</TableCell>
+                  <TableCell className="text-center">
+                    <a
+                      href="#"
+                      className="z-10 ml-2 rounded-sm bg-slate-500 px-1 text-slate-300"
+                    >
+                      Add
+                      <span className="hidden pl-1 lg:inline-block">
+                        to Cart
+                      </span>
+                    </a>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
