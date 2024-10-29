@@ -76,21 +76,35 @@ export default function Player({ songList }: { songList: Item[] }) {
     });
   };
 
+  const [titleFilter, setTitleFilter] = useState("");
+  const artists = new Set(items.map((item) => item.artist));
+  const [artistFilter, setArtistFilter] = useState("");
+
   const [filteredItems, setFilteredItems] = useState<Item[]>([]);
   useEffect(() => {
-    const filteredItems2 = items.filter((item) =>
-      selectedInstruments.length === 0 && selectedGenres.length === 0
-        ? true
-        : selectedInstruments.length === 0
-        ? selectedGenres.includes(item.genre)
-        : selectedGenres.length === 0
-        ? selectedInstruments.includes(item.instrument)
-        : selectedInstruments.includes(item.instrument) &&
-          selectedGenres.includes(item.genre)
-    );
+    const filteredItems2 = items.filter((item) => {
+      const isTitleFilterMatch =
+        titleFilter === "" ||
+        item.title.toLowerCase().includes(titleFilter.toLowerCase());
+      const isArtistFilterMatch =
+        artistFilter === "" ||
+        item.artist.toLowerCase().includes(artistFilter.toLowerCase());
+      const isInstrumentFilterMatch =
+        selectedInstruments.length === 0 ||
+        selectedInstruments.includes(item.instrument);
+      const isGenreFilterMatch =
+        selectedGenres.length === 0 || selectedGenres.includes(item.genre);
+
+      return (
+        isTitleFilterMatch &&
+        isArtistFilterMatch &&
+        isInstrumentFilterMatch &&
+        isGenreFilterMatch
+      );
+    });
 
     setFilteredItems(filteredItems2);
-  }, [items, selectedInstruments, selectedGenres]);
+  }, [items, selectedInstruments, selectedGenres, artistFilter, titleFilter]);
 
   const handleShuffleClick = () => {
     setFilteredItems(shuffleArray(filteredItems));
@@ -227,6 +241,27 @@ export default function Player({ songList }: { songList: Item[] }) {
             </button>
           ))}
         </div>
+      </fieldset>
+
+      <fieldset className={cn("flex gap-2", artist && "hidden")}>
+        <input
+          className="bg-slate-600 text-slate-300 rounded-lg px-1 h-8 border"
+          type="input"
+          placeholder="Filter by title"
+          onChange={(e) => setTitleFilter(e.target.value)}
+        />
+        <input
+          className="bg-slate-600 text-slate-300 rounded-lg px-1 h-8 border"
+          type="input"
+          list="artist"
+          placeholder="Filter by artist"
+          onChange={(e) => setArtistFilter(e.target.value)}
+        />
+        <datalist id="artist">
+          {Array.from(artists).map((artist) => (
+            <option key={artist} value={artist} />
+          ))}
+        </datalist>
       </fieldset>
       <div
         className={cn(
