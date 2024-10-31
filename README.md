@@ -1,3 +1,5 @@
+![player](https://github.com/user-attachments/assets/a6008f15-3777-4eab-9d42-8e5c9bccccef)
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app). It defines a React component named Player that serves as an audio player with functionalities such as shuffling songs, filtering by genre and instrument, and controlling playback (play, pause, mute, skip). It uses React hooks for state management and side effects, and leverages environment variables for configuration.
 
 ## Key Features
